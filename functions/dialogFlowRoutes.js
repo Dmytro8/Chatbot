@@ -1,3 +1,5 @@
+const chatbot = require("../chatbot/chatbot");
+
 module.exports = (router) => {
   router.get("/", (req, res) => {
     res.json({
@@ -5,10 +7,13 @@ module.exports = (router) => {
     });
   });
 
-  router.post("/df_text_query", (req, res) => {
-    res.send({
-      do: "text query",
-    });
+  router.post("/df_text_query", async (req, res) => {
+    const responses = await chatbot.textQuery(
+      req.body.text,
+      req.body.parameters
+    );
+
+    res.send(responses[0].queryResult);
   });
 
   router.post("/df_event_query", (req, res) => {
