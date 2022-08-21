@@ -2,6 +2,7 @@
 
 const dialogFlow = require("dialogflow");
 const config = require("../config/keys");
+const { struct } = require("pb-util");
 
 const sessionClient = new dialogFlow.SessionsClient();
 const sessionPath = sessionClient.sessionPath(
@@ -18,6 +19,30 @@ module.exports = {
         text: {
           // The query to send to the dialogflow agent
           text: text,
+          // The language used by the client (en-US)
+          languageCode: config.dialogFlowSessionLanguageCode,
+        },
+      },
+      queryParams: {
+        payload: {
+          data: parameters,
+        },
+      },
+    };
+    const responses = await sessionClient
+      .detectIntent(request)
+      .then(self.handleAction);
+    return responses;
+  },
+  eventQuery: async (event, parameters = {}) => {
+    const self = module.exports;
+    const request = {
+      session: sessionPath,
+      queryInput: {
+        event: {
+          // The query to send to the dialogflow agent
+          name: event,
+          parameters: struct.encode(parameters),
           // The language used by the client (en-US)
           languageCode: config.dialogFlowSessionLanguageCode,
         },
