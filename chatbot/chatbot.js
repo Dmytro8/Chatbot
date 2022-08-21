@@ -6,8 +6,6 @@ const { struct } = require("pb-util");
 
 const projectID = config.googleProjectID;
 
-console.log({config});
-
 const credentials = {
   client_email: config.googleClientEmail,
   private_key: config.googlePrivateKey,
